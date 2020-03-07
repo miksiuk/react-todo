@@ -3,6 +3,7 @@ import './App.css';
 import PostList from "./components/PostList";
 import ToDoLine from "./components/ToDoLine";
 import AddTodo from "./components/AddTodo";
+import ModalDeleteConfirm from "./components/Modal"
 //XMLHTTPRequest
 //fetch
 //axious
@@ -22,7 +23,9 @@ function App() {
     }
   ]
 
-  const [todoList, setTodoList] = useState(list)
+  const [todoList, setTodoList] = useState(list);
+  const [isOpenModalDeleteConfirm, setIsOpenModalDeleteConfirm] = useState(false);
+  const [modalDeletedTodo, setModalDeletedTodo] = useState({});
 
   const todoChangeStatus = (todo) => {
     let newTodoList = [...todoList];
@@ -39,6 +42,18 @@ function App() {
   const todoRemove = (todo) => {
     let newTodoList = [...todoList].filter(el => el.id !== todo.id);
     setTodoList(newTodoList);
+    setModalDeletedTodo({});
+    setIsOpenModalDeleteConfirm(false);
+  }
+
+  const closeModal = () => {
+    setModalDeletedTodo({});
+    setIsOpenModalDeleteConfirm(false);
+  }
+
+  const openModal = (todo) => {
+    setModalDeletedTodo(todo);
+    setIsOpenModalDeleteConfirm(true);
   }
 
   const todoAdd = (name) => {
@@ -87,12 +102,16 @@ function App() {
             todoChangeStatus={todoChangeStatus}
             todoUp={todoUp}
             todoDown={todoDown}
-            todoRemove={todoRemove}
+            openModal={openModal}
             todoChangeName={todoChangeName}
             first={i === 0 ? true : false}
             last={i === todoList.length - 1 ? true : false} /></li>)}
       </ul>
       <AddTodo addTodo={todoAdd} />
+      <ModalDeleteConfirm show={isOpenModalDeleteConfirm}
+        closeModal={closeModal}
+        todo={modalDeletedTodo}
+        todoRemove={todoRemove} />
 
     </div>
   );
